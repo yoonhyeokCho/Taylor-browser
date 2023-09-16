@@ -8,9 +8,9 @@ const Splash = ({}) => {
     useEffect(()=>{
         setTimeout(()=>{
             navigationIterator([
-                [getRootNavigation,"reset",{routes: [{name: 'GNB',params: {}}]}],
+                [getRootNavigation,"reset",{routes: [{name: 'RacgooTest',params: {}}]}],
             ]);
-        },2000);
+        },100);
     },[]);
     
     return <View>
