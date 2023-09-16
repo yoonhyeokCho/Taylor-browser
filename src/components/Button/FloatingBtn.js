@@ -20,7 +20,8 @@ import {
 import dimensions from "../../styles/dimensions";
 import { withTiming } from "react-native-reanimated";
 import colors from "../../styles/colors";
-
+import { getRootNavigation, navigationIterator } from "../../navigations/navigations";
+import { AntDesign } from '@expo/vector-icons';
 let startTime;
 let endTime;
 
@@ -215,11 +216,8 @@ class FloatingBtn extends Component {
       </Pressable>,
       <Pressable
         onPress={() => {
-          // DeviceEventEmitter.emit("splitView",true)
-          let nextIsSplitValue = !this.state.isSplit;
-          DeviceEventEmitter.emit("splitView", nextIsSplitValue);
-          this.setState({ isSplit: nextIsSplitValue });
-          console.log(this.state.isSplit);
+          getRootNavigation().navigate('Extension',{});
+          this.handleClose();
         }}
         style={[
           styles.menuContainer,
@@ -228,7 +226,7 @@ class FloatingBtn extends Component {
           },
         ]}
       >
-        <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
+        <Text>익스텐션</Text>
       </Pressable>,
       <Pressable
         onPress={() => {
@@ -322,9 +320,13 @@ class FloatingBtn extends Component {
                 height: 60,
                 borderRadius: 30,
                 backgroundColor: colors.blue.GoogleBlue,
+                justifyContent: "center",
+                alignItems: "center"
               }}
               onPress={this.handleClose}
-            />
+            >
+              <AntDesign name="star" size={24} color="black" />
+            </Pressable>
             {menus.map((menu, menuIndex) => (
               <View
                 key={menuIndex}
@@ -384,8 +386,10 @@ class FloatingBtn extends Component {
           >
             <Pressable
               onPress={this.handleOpen}
-              style={{ width: "100%", height: "100%" }}
-            ></Pressable>
+              style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}
+            >
+              <AntDesign name="star" size={24} color="black" />
+            </Pressable>
           </Animated.View>
         </View>
       </Fragment>
