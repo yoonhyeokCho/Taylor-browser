@@ -8,5 +8,5 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
-, "assets/icons/Kakao/KakaoLogo.js"  ]
+, "assets/icons/Kakao/KakaoLogo.js", "src/components/Browser/Browser.js"  ]
 }

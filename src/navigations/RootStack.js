@@ -5,6 +5,7 @@ import { createStackNavigator, TransitionPresets } from '@react-navigation/stack
 
 
 import GNB from './GNB';
+import RacgooTest from "../screen/RacgooTest";
 import Splash from '../screen/Splash';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { RootNavigationRef } from './navigations';
@@ -41,6 +42,11 @@ const RootStack = () => {
                 <Stack.Screen 
                     name={"MainHome"}
                     component={MainHome}
+                    options={{ headerShown: true }} 
+                />
+                <Stack.Screen 
+                    name={"RacgooTest"}
+                    component={RacgooTest}
                     options={{ headerShown: true }} 
                 />
             </Stack.Navigator>
