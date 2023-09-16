@@ -33,13 +33,20 @@ const MainHome = () => {
         });
     }, []);
 
+    useEffect(() => {
+        if (isSplit) {
+            setSplitContainer1Height(300);
+            setSplitContainer2Height(500);
+        }
+    }, [isSplit]);
+
     return (
         <RenderSafeAreaView>
             <View style={styles.entire}>
-                <View style={{ height: splitContainer1Height }}>
+                <View style={isSplit ? { height: splitContainer1Height } : {height: '100%'}}>
                     <Browser />
                 </View>
-
+                
                 {isSplit && (
                     <View>
                         <View style={styles.grayBar} {...panResponder.panHandlers} />
