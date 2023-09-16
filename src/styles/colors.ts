@@ -37,6 +37,7 @@ const orange = {
     Blue600: "#2069D7",
     Blue400: "#5B9DFF",
     Blue100: "#E1EDFF",
+    GoogleBlue: "#206FE5"
   };
   
   const red = {
