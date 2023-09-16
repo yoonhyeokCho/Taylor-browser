@@ -1,0 +1,94 @@
+{
+  "expo": {
+    "name": "tailor",
+    "slug": "tailor",
+    "version": "1.0.0",
+    "icon": "./public/images/icon.png",
+    "scheme": "tailor",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./public/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "requireFullScreen": true,
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyBaUr9a3S5yknctwMznE08BqZWgtywn8JI"
+      },
+      "bundleIdentifier": "com.tailor.racgoo",
+      "buildNumber": "8",
+      "infoPlist": {
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "We need to access your location in background",
+        "NSLocationWhenInUseUsageDescription": "We need to access your location",
+        "NSLocationUsageDescription": "We need to access your location",
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./public/images/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBaUr9a3S5yknctwMznE08BqZWgtywn8JI"
+        }
+      },
+      "versionCode": 100,
+      "permissions": [
+        "VIBRATE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
+      ],
+      "package": "com.tailor.racgoo"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./public/images/favicon.png"
+    },
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "692c4245-8a84-43ec-aec6-7b8d01ed5de7"
+      },
+      "fontAssets": [
+        {
+          "fontFamily": "Pretendard",
+          "fontFiles": [
+            "./public/fonts/Pretendard-Regular.otf",
+            "./public/fonts/Pretendard-Bold.otf",
+            "./public/fonts/Pretendard-SemiBold.otf",
+            "./public/fonts/Pretendard-Medium.otf"
+          ]
+        }
+      ]
+    },
+    "owner": "racgoo"
+  },
+  "plugins": [
+    [
+      "expo-screen-orientation",
+      {
+        "initialOrientation": "PORTRAIT"
+      },
+      "expo-location",
+      
+      {
+        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location.",
+        "isIosBackgroundLocationEnabled": true,
+        "isAndroidBackgroundLocationEnabled": true
+      }
+    ]
+  ]
+}
