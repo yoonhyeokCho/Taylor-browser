@@ -18,7 +18,7 @@ const JIHO = () => {
         <Text>
             JJJJ
         </Text>
-        <FloatingBtn setState={setState}/>
+        <FloatingBtn/>
     </View>
 }
 export default JIHO;
