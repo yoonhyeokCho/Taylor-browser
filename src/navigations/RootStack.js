@@ -11,6 +11,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { RootNavigationRef } from './navigations';
 import requestLoadingClose from '../actions/loading/requestLoadingClose';
 import MainHome from '../screen/MainHome';
+import JIHO from '../screen/JH';
 import MultiWindow from '../screen/MultiWindow';
 
 
@@ -46,6 +47,14 @@ const RootStack = () => {
                     options={{ headerShown: true }} 
                 />
                 <Stack.Screen 
+<<<<<<< HEAD
+=======
+                    name={"JIHO"}
+                    component={JIHO}
+                    options={{ headerShown: true }} 
+                />
+                <Stack.Screen 
+>>>>>>> jiho
                     name={"RacgooTest"}
                     component={RacgooTest}
                     options={{ headerShown: true }} 
