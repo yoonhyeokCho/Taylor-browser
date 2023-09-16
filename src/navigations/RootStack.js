@@ -11,6 +11,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { RootNavigationRef } from './navigations';
 import requestLoadingClose from '../actions/loading/requestLoadingClose';
 import MainHome from '../screen/MainHome';
+import MultiWindow from '../screen/MultiWindow';
 
 
 const RootStack = () => {
