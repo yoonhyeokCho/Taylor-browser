@@ -10,6 +10,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { RootNavigationRef } from './navigations';
 import requestLoadingClose from '../actions/loading/requestLoadingClose';
 import MainHome from '../screen/MainHome';
+import JIHO from '../screen/JH';
 
 
 const RootStack = () => {
@@ -41,6 +42,11 @@ const RootStack = () => {
                 <Stack.Screen 
                     name={"MainHome"}
                     component={MainHome}
+                    options={{ headerShown: true }} 
+                />
+                <Stack.Screen 
+                    name={"JIHO"}
+                    component={JIHO}
                     options={{ headerShown: true }} 
                 />
             </Stack.Navigator>
