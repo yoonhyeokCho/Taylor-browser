@@ -7,7 +7,7 @@
 */
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Button, PanResponder, Animated } from 'react-native';
+import { StyleSheet, View, Button, PanResponder, Animated, DeviceEventEmitter } from 'react-native';
 
 let startTime;
 let endTime;
@@ -88,7 +88,9 @@ class FloatingBtn extends Component {
     this.setState(prevState => ({
       isVisible: !prevState.isVisible
     }))
-    this.props.setState(prev => ({ ...prev, MultiWindow: !prev.MultiWindow }));
+    let nextMultiwindowState = !this.props.state.MultiWindow;
+    DeviceEventEmitter.emit("splitView",nextMultiwindowState);
+    this.props.setState({ MultiWindow: nextMultiwindowState});
   }
 
   AngleChange = () => {
@@ -117,7 +119,7 @@ class FloatingBtn extends Component {
         {isVisible && <View style={[styles.MenuBtn, {transform: [{translateX: X_center + len * Math.cos(radian) - btn_radius}, {translateY: Y_center + len * Math.sin(radian) - btn_radius}]}]}
                             {...this.PR_btn.panHandlers} />}
         <Animated.View
-              style={[styles.FloatBtn, {transform: [{translateX: pan.x}, {translateY: pan.y}]}]}
+              style={[styles.FloatBtn, {transform: [{translateX: 180}, {translateY: 600}]}]}
               {...this.panResponder.panHandlers}/>
         
       </View>
