@@ -5,6 +5,7 @@ import Browser from "../components/Browser/Browser";
 
 const MainHome = () => {
     const pan = useRef(new Animated.ValueXY()).current;
+    const WebViewRef = useRef();
     const [isSplit, setIsSplit] = useState(true);
     const [splitContainer1Height, setSplitContainer1Height] = useState(300);
     const [splitContainer2Height, setSplitContainer2Height] = useState(500);
@@ -40,15 +41,45 @@ const MainHome = () => {
         }
     }, [isSplit]);
 
+    useEffect(()=>{
+        WebViewRef.current.injectJavaScript(
+            `
+            document.querySelectorAll('#ad-element').forEach(element => {
+                element.style.display = 'none';
+            });
+            document.querySelectorAll('.sch_home_shortcut').forEach(element => {
+                element.style.display = 'none';
+            });
+            document.querySelectorAll('#MM_search_container').forEach(element => {
+                element.style.display = 'none';
+            });
+            document.querySelectorAll('#main_search_specialda_1').forEach(element => {
+                element.style.display = 'none';
+            });
+            document.querySelectorAll('div.mf_info_wrap').forEach(element => {
+                element.style.display = 'none';
+            });
+            document.querySelectorAll('div.nmap_wrapper').forEach(element => {
+                element.style.display = 'none';
+            });
+            document.querySelectorAll('div.main_footer').forEach(element => {
+                element.style.display = 'none';
+            });
+            
+            true
+            `
+        );
+    },[]);
 
     return (
         <View style={styles.entire}>
             <WebView
+                ref={WebViewRef}
                 source={{ uri: 'https://naver.com' }}
                 javaScriptEnabled ={true}
                 domStorageEnabled = {true}
                 injectedJavaScript={`
-                document.getElementById('search_area').style.display = 'none'
+                document.getElementById('container').style.display = 'none'
               `}
             />
             {isSplit && (
