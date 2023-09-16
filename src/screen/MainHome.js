@@ -1,73 +1,61 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, DeviceEventEmitter } from "react-native";
+import Browser from "../components/Browser/Browser";
+import RenderSafeAreaView from "../components/Layout/RenderSafeAreaView";
 
 const MainHome = () => {
     //newScreenValue = true 면 브라우저 추가, false면 구글 화면 추가
-    const [state, setState] = useState({
-        newScreenType: false,
-        isSplit: true,
-    });
-    
-    useEffect(() => {
-        console.log('booleanValue1 changed:', state.booleanValue1);
-    }, [state.newScreenType]);
+
+    const [isSplit, setIsSplit] = useState(true);
 
     useEffect(() => {
-        console.log('booleanValue2 changed:', state.booleanValue2);
-    }, [state.isSplit]);
+        console.log('booleanValue2 changed:', isSplit);
+        DeviceEventEmitter.addListener("splitView",(isSplit) => {
+            setIsSplit(isSplit);
+        });
+    }, []);
 
     return (
-
-        <View style={styles.entire}>
-            <View style={state.isSplit ? styles.splitContainer1 : styles.fullContainer}>
-                <Text>New Screen: Browser</Text>
-                <Text>New Screen: Browser</Text>
-                <Text>New Screen: Browser</Text>
-            </View>
-
-            {state.isSplit && (
-                state.newScreenType ? (
-                <View>
-                    <View style={styles.grayBar}/>
-                    <View style={styles.splitContainer2}>
-                        <Text>New Screen: Browser</Text>
-                    </View>
+        <RenderSafeAreaView>
+            <View style={styles.entire}>
+                <View style={isSplit ? styles.splitContainer1 : styles.fullContainer}>
+                    <Browser />
                 </View>
-                    
-                ) : (
+
+                {isSplit && (
                     <View>
-                        <View style={styles.grayBar}/>
+                        <View style={styles.grayBar} />
                         <View style={styles.splitContainer2}>
-                            <Text>New Screen: Google</Text>
+                            <Browser />
                         </View>
                     </View>
-                )
-            )}
-        </View>
+                )}
+            </View>
+        </RenderSafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     entire: {
-        height : '100%',
-        backgroundColor:'yellow',
+        height: '100%',
+        backgroundColor: 'yellow',
     },
-    fullContainer:{
-        height : 750,
-        backgroundColor:'green',
+    fullContainer: {
+        height: 750,
+        backgroundColor: 'green',
     },
-    splitContainer1:{
-        height : 300,
-        backgroundColor:'green',
+    splitContainer1: {
+        height: 300,
+        backgroundColor: 'green',
     },
-    splitContainer2:{
-        height : 500,
-        backgroundColor:'white',
+    splitContainer2: {
+        height: 500,
+        backgroundColor: 'white',
     },
     grayBar: {
-        width: '100%', 
-        height: 10, 
-        backgroundColor: 'gray', 
+        width: '100%',
+        height: 10,
+        backgroundColor: 'gray',
     }
 })
 
