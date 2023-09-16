@@ -59,9 +59,6 @@
       "typedRoutes": true
     },
     "extra": {
-      "eas": {
-        "projectId": "692c4245-8a84-43ec-aec6-7b8d01ed5de7"
-      },
       "fontAssets": [
         {
           "fontFamily": "Pretendard",
