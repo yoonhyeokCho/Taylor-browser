@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, DeviceEventEmitter, Animated, PanResponder } from "react-native";
+import { View, StyleSheet, DeviceEventEmitter, Animated, PanResponder } from "react-native";
+import WebView from 'react-native-webview';
 import Browser from "../components/Browser/Browser";
-import RenderSafeAreaView from "../components/Layout/RenderSafeAreaView";
 
 const MainHome = () => {
     const pan = useRef(new Animated.ValueXY()).current;
@@ -12,7 +12,7 @@ const MainHome = () => {
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onMoveShouldSetPanResponder: () => true,
-        
+
         onPanResponderMove: (e, gesture) => {
             const newHeight1 = Math.max(100, splitContainer1Height + gesture.dy);
             const newHeight2 = Math.max(100, splitContainer2Height - gesture.dy);
@@ -20,7 +20,7 @@ const MainHome = () => {
             setSplitContainer1Height(newHeight1);
             setSplitContainer2Height(newHeight2);
         },
-        
+
         onPanResponderRelease: () => {
             pan.flattenOffset();
         },
@@ -40,36 +40,39 @@ const MainHome = () => {
         }
     }, [isSplit]);
 
+
     return (
-        <RenderSafeAreaView>
-            <View style={styles.entire}>
-                <View style={isSplit ? { height: splitContainer1Height } : {height: '100%'}}>
-                    <Browser />
-                </View>
-                
-                {isSplit && (
-                    <View>
-                        <View style={styles.grayBar} {...panResponder.panHandlers} />
-                        <View style={{ height: splitContainer2Height }}>
-                            <Browser />
-                        </View>
+        <View style={styles.entire}>
+            <WebView
+                source={{ uri: 'https://naver.com' }}
+                javaScriptEnabled ={true}
+                domStorageEnabled = {true}
+                injectedJavaScript={`
+                document.getElementById('search_area').style.display = 'none'
+              `}
+            />
+            {isSplit && (
+                <View>
+                    <View style={styles.grayBar} {...panResponder.panHandlers} />
+                    <View style={{ height: splitContainer2Height }}>
+                        <Browser />
                     </View>
-                )}
-            </View>
-        </RenderSafeAreaView>
-    )
-}
+                </View>
+            )}
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
     entire: {
-        height: '100%',
+        flex: 1,
         backgroundColor: 'white',
     },
     grayBar: {
         width: '100%',
         height: 20,
-        backgroundColor: '#206FE5',
-    }
-})
+        backgroundColor: 'green',
+    },
+});
 
 export default MainHome;
