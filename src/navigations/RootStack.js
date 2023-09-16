@@ -12,6 +12,7 @@ import { RootNavigationRef } from './navigations';
 import requestLoadingClose from '../actions/loading/requestLoadingClose';
 import MainHome from '../screen/MainHome';
 import JIHO from '../screen/JH';
+import MultiWindow from '../screen/MultiWindow';
 
 
 const RootStack = () => {
