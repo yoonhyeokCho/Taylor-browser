@@ -9,6 +9,7 @@ import Splash from '../screen/Splash';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { RootNavigationRef } from './navigations';
 import requestLoadingClose from '../actions/loading/requestLoadingClose';
+import MainHome from '../screen/MainHome';
 
 
 const RootStack = () => {
@@ -36,6 +37,11 @@ const RootStack = () => {
                     name={"GNB"}
                     component={GNB}
                     options={{ headerShown: false }} 
+                />
+                <Stack.Screen 
+                    name={"MainHome"}
+                    component={MainHome}
+                    options={{ headerShown: true }} 
                 />
             </Stack.Navigator>
         </NavigationContainer>

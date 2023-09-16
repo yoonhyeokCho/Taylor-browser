@@ -8,7 +8,7 @@ const Splash = ({}) => {
     useEffect(()=>{
         setTimeout(()=>{
             navigationIterator([
-                [getRootNavigation,"reset",{routes: [{name: 'GNB',params: {}}]}],
+                [getRootNavigation,"reset",{routes: [{name: 'MainHome',params: {}}]}],
             ]);
         },2000);
     },[]);
