@@ -8,6 +8,7 @@ const Browser = ({ width = "100%", height = "100%" }) => {
   const system = useRecoilValue(systemAtom);
   const webViewRef = useRef(null);
   const [inputUri, setInputUri] = useState("");
+  const [stateUrl,setStateUrl] = useState("");
   const [currentUri, setCurrentUri] = useState("https://google.com");
   const [extensionString, setExtensionString] = useState("");
   const handleChangeUri = (text) => {
@@ -49,6 +50,50 @@ const Browser = ({ width = "100%", height = "100%" }) => {
     }
   };
 
+  
+
+
+  useEffect(()=>{
+    setTimeout(()=>{
+      webViewRef.current.injectJavaScript(`
+    function removeElementsExcept(target,type) {
+      let excludedElements = document.querySelectorAll((type === "id" ? "#" : ".") + target);
+      let parentComponent = excludedElements[0].parentElement;
+      if (parentComponent) {
+        let childComponents = parentComponent.children;
+        for (let i = childComponents.length - 1; i >= 0; i--) {
+          let child = childComponents[i];
+          if(type==="id"){
+            if (child.id !== target) {
+              parentComponent.removeChild(child);
+            }
+          }else{
+            if (!child.classList.contains(target)) {
+              parentComponent.removeChild(child);
+            }
+          }
+        }
+      }
+      let result = parentComponent.innerHTML;
+      if (excludedElements.length === 0) {
+        console.error('No elements matched the provided selector.');
+        return;
+      }
+      let parentElement = document.body;
+      let childElements = Array.from(parentElement.children);
+      childElements.forEach(function (child) {
+        if (!excludedElements[0] || !excludedElements[0].contains(child)) {
+          parentElement.removeChild(child);
+        }
+      });
+      parentElement.innerHTML = result;
+    };
+    removeElementsExcept("sch","class");
+    true
+    `)
+    },120);
+  },[stateUrl]);
+
   return (
     <View style={{ width, height }}>
       <TextInput
@@ -60,6 +105,9 @@ const Browser = ({ width = "100%", height = "100%" }) => {
         onSubmitEditing={handleSearch}
       />
       <WebView
+        onNavigationStateChange={(e)=>{
+          setStateUrl(e.url);
+        }}
         ref={webViewRef}
         injectedJavaScript={extensionString}
         allowsBackForwardNavigationGestures
