@@ -1,6 +1,6 @@
 
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { CardStyleInterpolators, createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 
 
 
@@ -12,6 +12,8 @@ import { RootNavigationRef } from './navigations';
 import requestLoadingClose from '../actions/loading/requestLoadingClose';
 import MainHome from '../screen/MainHome';
 import JIHO from '../screen/JH';
+import Extension from '../screen/Extension';
+import GPT from '../screen/GPT';
 
 
 const RootStack = () => {
@@ -44,6 +46,30 @@ const RootStack = () => {
                     name={"MainHome"}
                     component={MainHome}
                     options={{ headerShown: true }} 
+                />
+                <Stack.Screen 
+                    name={"Extension"}
+                    component={Extension}
+                    options={{ 
+                        headerShown: false , 
+                        gestureEnabled: true,
+                        gestureDirection: "vertical",
+                        // cardStyleInterpolator: BackAnimation,
+                        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+                        presentation: "transparentModal",
+                    }} 
+                />
+                <Stack.Screen 
+                    name={"GPT"}
+                    component={GPT}
+                    options={{ 
+                        headerShown: false , 
+                        gestureEnabled: true,
+                        gestureDirection: "vertical",
+                        // cardStyleInterpolator: BackAnimation,
+                        cardStyleInterpolator: CardStyleInterpolators.forVerticalIOS,
+                        presentation: "transparentModal",
+                    }} 
                 />
                 <Stack.Screen 
                     name={"JIHO"}

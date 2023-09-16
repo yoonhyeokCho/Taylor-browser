@@ -1,14 +1,15 @@
-import {
-  ActivityIndicator,
-  StyleSheet,
-  TextInput,
-  View,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, TextInput, View } from "react-native";
 import WebView from "react-native-webview";
-import { useState } from "react";
+import { createRef, useEffect, useRef, useState } from "react";
+import { useRecoilValue } from "recoil";
+import { systemAtom } from "../../recoil/recoil";
+import scripts from "../../modules/extension/scripts";
 const Browser = ({ width = "100%", height = "100%" }) => {
+  const system = useRecoilValue(systemAtom);
+  const webViewRef = useRef(null);
   const [inputUri, setInputUri] = useState("");
   const [currentUri, setCurrentUri] = useState("https://google.com");
+  const [extensionString, setExtensionString] = useState("");
   const handleChangeUri = (text) => {
     setInputUri(text);
   };
@@ -22,6 +23,32 @@ const Browser = ({ width = "100%", height = "100%" }) => {
     setCurrentUri(normarlizedUri);
   };
 
+  useEffect(() => {
+    setExtensionString(
+      system.extensionStates
+        .filter((extension) => extension.active)
+        .reduce((acc, cur) => {
+          let result = acc;
+          if (scripts[cur.name]) {
+            result += scripts[cur.name];
+          }
+          return result;
+        }, "") + "  true"
+    );
+  }, [system.extensionStates]);
+
+  useEffect(() => {
+    reloadWebView();
+    console.log(extensionString);
+  }, [extensionString]);
+
+  const reloadWebView = () => {
+    // WebView 리로드
+    if (webViewRef.current) {
+      webViewRef.current.reload();
+    }
+  };
+
   return (
     <View style={{ width, height }}>
       <TextInput
@@ -33,6 +60,8 @@ const Browser = ({ width = "100%", height = "100%" }) => {
         onSubmitEditing={handleSearch}
       />
       <WebView
+        ref={webViewRef}
+        injectedJavaScript={extensionString}
         allowsBackForwardNavigationGestures
         source={{
           uri: currentUri,

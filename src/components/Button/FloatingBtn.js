@@ -15,21 +15,20 @@ import {
   Animated,
   DeviceEventEmitter,
   Pressable,
-  Text
+  Text,
 } from "react-native";
 import dimensions from "../../styles/dimensions";
 import { withTiming } from "react-native-reanimated";
 import colors from "../../styles/colors";
-
+import { getRootNavigation, navigationIterator } from "../../navigations/navigations";
+import { AntDesign } from '@expo/vector-icons';
 let startTime;
 let endTime;
 
-
-
 let floatingBtnBottomOffset = 30;
 let floatingBtnCenterPosition = {
-  x: dimensions.width/2,
-  y: dimensions.height - ( 150+floatingBtnBottomOffset )
+  x: dimensions.width / 2,
+  y: dimensions.height - (150 + floatingBtnBottomOffset),
 };
 
 class FloatingBtn extends Component {
@@ -39,11 +38,25 @@ class FloatingBtn extends Component {
       pan: new Animated.ValueXY(),
       isVisible: false,
       angle: 0,
+      preAngle: 0,
+      startAngle: 0,
       isSplit: false,
       fadeAnim: new Animated.Value(0),
-      sizeAnim: new Animated.Value(50)
+      sizeAnim: new Animated.Value(50),
     };
-    
+
+    this.updatePreAngle = () => {
+      this.setState({
+        preAngle: this.state.angle,
+      });
+    };
+
+    this.fixStartAngle = (angle) => {
+      this.setState({
+        startAngle: angle,
+      });
+    };
+
     this.panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => {
@@ -52,7 +65,7 @@ class FloatingBtn extends Component {
       onPanResponderTerminationRequest: (event, gestureState) => {
         return gestureState.dx !== 0 || gestureState.dy !== 0;
       },
-      
+
       onPanResponderGrant: () => {
         //console.log('start')
         startTime = Date.now();
@@ -65,70 +78,61 @@ class FloatingBtn extends Component {
       onPanResponderMove: Animated.event(
         [null, { dx: this.state.pan.x, dy: this.state.pan.y }],
         { useNativeDriver: false }
-        ),
-        onPanResponderRelease: () => {
-          endTime = Date.now();
-          this.state.pan.flattenOffset();
-          console.log(endTime - startTime);
-          if (endTime - startTime < 120) {
-            this.touchFloatBtn();
-          } else if (this.state.isVisible) {
-            this.setState({
-              isVisible: false,
-            });
-          }
-        },
-      });
-      
-      //기능 버튼
-      this.PR_btn = PanResponder.create({
-        onStartShouldSetPanResponder: () => true,
-        onMoveShouldSetPanResponder: () => false,
-        onPanResponderRelease: () => {
-          console.log("btn");
-          // this.AngleChange();
-        },
-      });
-      
-      
-      //Background
-      this.PR_Back = PanResponder.create({
-        onMoveShouldSetPanResponder: () => {
-          return this.state.isVisible;
-        },
-        onPanResponderMove: (evt, gestureState) => {
-          // console.log(gestureState.dx,gestureState.dy);
-          // console.log(gestureState.moveY,floatingBtnCenterPosition.y);
-          // console.log(gestureState.moveX-floatingBtnCenterPosition.x,floatingBtnCenterPosition.y-gestureState.moveY)
-          // console.log( * 180 /  Math.PI)
-          
-          
-          // console.log("Back");
-          // floatingBtnCenterPosition
-          // let direction;
-          // if(gestureState.moveX <= floatingBtnCenterPosition.x){
-            //   if(gestureState.moveY <= floatingBtnCenterPosition.y){
-              //       //3
-              //   }else{
-                //     //1
-                //   }
-                // }else{
-                  //   if(gestureState.moveY <= floatingBtnCenterPosition.y){
-                    //     //4
-                    //   }else{
-                      //     //2
-                      //   }
-        // }
-        let a = (Math.atan2(gestureState.moveY-floatingBtnCenterPosition.y,gestureState.moveX-floatingBtnCenterPosition.x) * 180 / Math.PI);
-        this.AngleChange(a);
+      ),
+      onPanResponderRelease: () => {
+        endTime = Date.now();
+        this.state.pan.flattenOffset();
+        console.log(endTime - startTime);
+        if (endTime - startTime < 120) {
+          this.touchFloatBtn();
+        } else if (this.state.isVisible) {
+          this.setState({
+            isVisible: false,
+          });
+        }
+      },
+    });
+
+    //기능 버튼
+    this.PR_btn = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => false,
+      onPanResponderRelease: () => {
+        console.log("btn");
+        // this.AngleChange();
+      },
+    });
+
+    //Background
+    this.PR_Back = PanResponder.create({
+      onMoveShouldSetPanResponder: () => {
+        return this.state.isVisible;
+      },
+
+      onPanResponderEnd: () => {
+        console.log("end");
+        this.updatePreAngle();
+        this.fixStartAngle(null);
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        let newAngle =
+          (Math.atan2(
+            gestureState.moveY - floatingBtnCenterPosition.y,
+            gestureState.moveX - floatingBtnCenterPosition.x
+          ) *
+            180) /
+          Math.PI;
+        if (this.state.startAngle) {
+          this.AngleChange(newAngle);
+        } else {
+          this.fixStartAngle(newAngle);
+        }
       },
       onPanResponderRelease: () => {
-        console.log("back");
+        // console.log("back");
       },
     });
   }
-
-  
 
   touchFloatBtn = () => {
     console.log("touch");
@@ -138,16 +142,16 @@ class FloatingBtn extends Component {
   };
 
   AngleChange = (angle) => {
-    // console.log("spin");
-    this.setState({angle: angle})
-    // this.setState((prevState) => ({
-    //   angle: prevState.angle + (direction === "plus" ? 10 : -10),
-    // }));
+    if (angle && this.state.startAngle) {
+      this.setState({
+        angle: this.state.preAngle + angle - this.state.startAngle,
+      });
+    }
   };
 
   handleClose = () => {
     this.setState((prevState) => ({
-      isVisible: false
+      isVisible: false,
     }));
     Animated.timing(this.state.fadeAnim, {
       toValue: 0,
@@ -159,12 +163,11 @@ class FloatingBtn extends Component {
       duration: 150,
       useNativeDriver: false,
     }).start();
-    
+
     // setTimeout(()=>{
-      
+
     // },150)
-    
-  }
+  };
 
   handleOpen = () => {
     Animated.timing(this.state.sizeAnim, {
@@ -172,17 +175,17 @@ class FloatingBtn extends Component {
       duration: 150,
       useNativeDriver: false,
     }).start();
-    setTimeout(()=>{
+    setTimeout(() => {
       Animated.timing(this.state.fadeAnim, {
         toValue: 1,
         duration: 100,
         useNativeDriver: false,
       }).start();
       this.setState((prevState) => ({
-        isVisible: true
+        isVisible: true,
       }));
-    },150)
-  }
+    }, 150);
+  };
 
   render() {
     const { pan } = this.state;
@@ -195,87 +198,109 @@ class FloatingBtn extends Component {
     const len = 100;
 
     menus = [
-      <Pressable 
-        onPress={()=>{
+      <Pressable
+        onPress={() => {
           // DeviceEventEmitter.emit("splitView",true)
           let nextIsSplitValue = !this.state.isSplit;
-          DeviceEventEmitter.emit("splitView",nextIsSplitValue);
-          this.setState({ isSplit: nextIsSplitValue});
-          console.log(this.state.isSplit)
-        }} 
-        style={styles.menuContainer}
+          DeviceEventEmitter.emit("splitView", nextIsSplitValue);
+          this.setState({ isSplit: nextIsSplitValue });
+        }}
+        style={[
+          styles.menuContainer,
+          {
+            backgroundColor: "red",
+          },
+        ]}
       >
         <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
       </Pressable>,
-      <Pressable 
-      onPress={()=>{
-        // DeviceEventEmitter.emit("splitView",true)
-        let nextIsSplitValue = !this.state.isSplit;
-        DeviceEventEmitter.emit("splitView",nextIsSplitValue);
-        this.setState({ isSplit: nextIsSplitValue});
-        console.log(this.state.isSplit)
-      }} 
-      style={styles.menuContainer}
-    >
-      <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
-    </Pressable>,
-      <Pressable 
-      onPress={()=>{
-        // DeviceEventEmitter.emit("splitView",true)
-        let nextIsSplitValue = !this.state.isSplit;
-        DeviceEventEmitter.emit("splitView",nextIsSplitValue);
-        this.setState({ isSplit: nextIsSplitValue});
-        console.log(this.state.isSplit)
-      }} 
-      style={styles.menuContainer}
-    >
-      <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
-    </Pressable>,
-      <Pressable 
-      onPress={()=>{
-        // DeviceEventEmitter.emit("splitView",true)
-        let nextIsSplitValue = !this.state.isSplit;
-        DeviceEventEmitter.emit("splitView",nextIsSplitValue);
-        this.setState({ isSplit: nextIsSplitValue});
-        console.log(this.state.isSplit)
-      }} 
-      style={styles.menuContainer}
-    >
-      <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
-    </Pressable>,
-      <Pressable 
-      onPress={()=>{
-        // DeviceEventEmitter.emit("splitView",true)
-        let nextIsSplitValue = !this.state.isSplit;
-        DeviceEventEmitter.emit("splitView",nextIsSplitValue);
-        this.setState({ isSplit: nextIsSplitValue});
-        console.log(this.state.isSplit)
-      }} 
-      style={styles.menuContainer}
-    >
-      <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
-    </Pressable>,
-      <Pressable 
-      onPress={()=>{
-        // DeviceEventEmitter.emit("splitView",true)
-        let nextIsSplitValue = !this.state.isSplit;
-        DeviceEventEmitter.emit("splitView",nextIsSplitValue);
-        this.setState({ isSplit: nextIsSplitValue});
-        console.log(this.state.isSplit)
-      }} 
-      style={styles.menuContainer}
-    >
-      <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
-    </Pressable>,
-    ]
+      <Pressable
+        onPress={() => {
+          getRootNavigation().navigate('Extension',{});
+          this.handleClose();
+        }}
+        style={[
+          styles.menuContainer,
+          {
+            backgroundColor: "yellow",
+          },
+        ]}
+      >
+        <Text>익스텐션</Text>
+      </Pressable>,
+      <Pressable
+        onPress={() => {
+          // DeviceEventEmitter.emit("splitView",true)
+          let nextIsSplitValue = !this.state.isSplit;
+          DeviceEventEmitter.emit("splitView", nextIsSplitValue);
+          this.setState({ isSplit: nextIsSplitValue });
+          console.log(this.state.isSplit);
+        }}
+        style={[
+          styles.menuContainer,
+          {
+            backgroundColor: "green",
+          },
+        ]}
+      >
+        <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
+      </Pressable>,
+      <Pressable
+        onPress={() => {
+          // DeviceEventEmitter.emit("splitView",true)
+          let nextIsSplitValue = !this.state.isSplit;
+          DeviceEventEmitter.emit("splitView", nextIsSplitValue);
+          this.setState({ isSplit: nextIsSplitValue });
+          console.log(this.state.isSplit);
+        }}
+        style={[
+          styles.menuContainer,
+          {
+            backgroundColor: "blue",
+          },
+        ]}
+      >
+        <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
+      </Pressable>,
+      <Pressable
+        onPress={() => {
+          // DeviceEventEmitter.emit("splitView",true)
+          let nextIsSplitValue = !this.state.isSplit;
+          DeviceEventEmitter.emit("splitView", nextIsSplitValue);
+          this.setState({ isSplit: nextIsSplitValue });
+          console.log(this.state.isSplit);
+        }}
+        style={[
+          styles.menuContainer,
+          {
+            backgroundColor: "black",
+          },
+        ]}
+      >
+        <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
+      </Pressable>,
+      <Pressable
+        onPress={() => {
+          let nextIsSplitValue = !this.state.isSplit;
+          DeviceEventEmitter.emit("splitView", nextIsSplitValue);
+          this.setState({ isSplit: nextIsSplitValue });
+          console.log(this.state.isSplit);
+        }}
+        style={[
+          styles.menuContainer,
+          {
+            backgroundColor: "purple",
+          },
+        ]}
+      >
+        <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
+      </Pressable>,
+    ];
 
     return (
       <Fragment>
         {isVisible && (
-          <Pressable
-            style={styles.activeDim}
-            onPress={this.handleClose}
-          />
+          <Pressable style={styles.activeDim} onPress={this.handleClose} />
         )}
         {isVisible && (
           <Animated.View
@@ -284,19 +309,28 @@ class FloatingBtn extends Component {
               {
                 left: dimensions.width / 2 - 150,
                 bottom: floatingBtnBottomOffset,
-                opacity: this.state.fadeAnim
+                opacity: this.state.fadeAnim,
               },
             ]}
             {...this.PR_Back.panHandlers}
           >
             <Pressable
-              style={{width: 60, height: 60,borderRadius: 30, backgroundColor: colors.blue.GoogleBlue}}
+              style={{
+                width: 60,
+                height: 60,
+                borderRadius: 30,
+                backgroundColor: colors.blue.GoogleBlue,
+                justifyContent: "center",
+                alignItems: "center"
+              }}
               onPress={this.handleClose}
-            />
-            {
-              menus.map((menu,menuIndex) => <View
+            >
+              <AntDesign name="star" size={24} color="black" />
+            </Pressable>
+            {menus.map((menu, menuIndex) => (
+              <View
                 key={menuIndex}
-                style={{ 
+                style={{
                   // backgroundColor: ["red","yellow","blue","white","black","orange"][menuIndex],
                   position: "absolute",
                   width: 90,
@@ -304,67 +338,57 @@ class FloatingBtn extends Component {
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
-                    // backgroundColor: "red" ,
-                    transform: [
-                      {
-                        translateX:  len * Math.cos(radian + ( Math.PI*2 / menus.length ) * menuIndex),
-                      },
-                      {
-                        translateY:  len * Math.sin(radian + ( Math.PI*2 / menus.length ) * menuIndex),
-                      },
-                    ]
+                  // backgroundColor: "red" ,
+                  transform: [
+                    {
+                      translateX:
+                        len *
+                        Math.cos(
+                          radian + ((Math.PI * 2) / menus.length) * menuIndex
+                        ),
+                    },
+                    {
+                      translateY:
+                        len *
+                        Math.sin(
+                          radian + ((Math.PI * 2) / menus.length) * menuIndex
+                        ),
+                    },
+                  ],
                 }}
               >
-                  {menu}
-              </View>)
-            }
-            
+                {menu}
+              </View>
+            ))}
           </Animated.View>
         )}
-        {/* {isVisible && (
-          <View
-            style={[
-              styles.MenuBtn,
-              {
-                left: dimensions.width / 2 - 150,
-                bottom: 30,
-              },
-              {
-                transform: [
-                  {
-                    translateX: X_center + len * Math.cos(radian) - btn_radius,
-                  },
-                  {
-                    translateY: Y_center + len * Math.sin(radian) - btn_radius,
-                  },
-                ],
-              },
-            ]}
-            {...this.PR_btn.panHandlers}
-          />
-        )} */}
-        <View style={{
-          position: "absolute",
-          left: dimensions.width / 2,
-          bottom: 0,
-          backgroundColor: "red",
-          zIndex: 10,
-          justifyContent: "center",
-          alignItems: "center"
-        }} >
+        <View
+          style={{
+            position: "absolute",
+            left: dimensions.width / 2,
+            bottom: 0,
+            backgroundColor: "red",
+            zIndex: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Animated.View
             style={[
               styles.FloatBtn,
               {
                 bottom: floatingBtnBottomOffset,
                 width: this.state.sizeAnim,
-                height: this.state.sizeAnim
+                height: this.state.sizeAnim,
               },
             ]}
             // {...this.panResponder.panHandlers}
           >
-            <Pressable onPress={this.handleOpen}  style={{width: "100%", height: "100%"}} >
-
+            <Pressable
+              onPress={this.handleOpen}
+              style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}
+            >
+              <AntDesign name="star" size={24} color="black" />
             </Pressable>
           </Animated.View>
         </View>
@@ -420,13 +444,13 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          borderWidth: 2,
-          borderRadius: 50,
-          width: 90, 
-          height: 90
-  }
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderRadius: 50,
+    width: 90,
+    height: 90,
+  },
 });
 
 export default FloatingBtn;
