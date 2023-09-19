@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, DeviceEventEmitter, Animated, PanResponder } from "react-native";
 import WebView from 'react-native-webview';
 import Browser from "../components/Browser/Browser";
+import { useRemoveExcept } from "../hooks/useRemoveExcept";
 
 const MainHome = () => {
     const pan = useRef(new Animated.ValueXY()).current;
@@ -41,35 +42,7 @@ const MainHome = () => {
         }
     }, [isSplit]);
 
-    useEffect(()=>{
-        WebViewRef.current.injectJavaScript(
-            `
-            document.querySelectorAll('#ad-element').forEach(element => {
-                element.style.display = 'none';
-            });
-            document.querySelectorAll('.sch_home_shortcut').forEach(element => {
-                element.style.display = 'none';
-            });
-            document.querySelectorAll('#MM_search_container').forEach(element => {
-                element.style.display = 'none';
-            });
-            document.querySelectorAll('#main_search_specialda_1').forEach(element => {
-                element.style.display = 'none';
-            });
-            document.querySelectorAll('div.mf_info_wrap').forEach(element => {
-                element.style.display = 'none';
-            });
-            document.querySelectorAll('div.nmap_wrapper').forEach(element => {
-                element.style.display = 'none';
-            });
-            document.querySelectorAll('div.main_footer').forEach(element => {
-                element.style.display = 'none';
-            });
-            
-            true
-            `
-        );
-    },[]);
+    useRemoveExcept(WebViewRef, "MM_HOME_SEARCH_WEATHER", "id");
 
     return (
         <View style={styles.entire}>
@@ -78,9 +51,6 @@ const MainHome = () => {
                 source={{ uri: 'https://naver.com' }}
                 javaScriptEnabled ={true}
                 domStorageEnabled = {true}
-                injectedJavaScript={`
-                document.getElementById('container').style.display = 'none'
-              `}
             />
             {isSplit && (
                 <View>
