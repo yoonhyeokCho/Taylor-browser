@@ -6,7 +6,7 @@ import WebView from 'react-native-webview';
 import { useRemoveExcept } from "../hooks/useRemoveExcept";
 
 
-const NaverStock = () => {
+const NaverWeather = () => {
     const WebViewRef = useRef();
 
     useRemoveExcept(WebViewRef, "MM_HOME_SEARCH_WEATHER", "id");
@@ -25,4 +25,4 @@ const NaverStock = () => {
     )
 }
 
-export default NaverStock
+export default NaverWeather
