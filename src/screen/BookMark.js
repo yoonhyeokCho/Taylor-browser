@@ -21,7 +21,12 @@ const BookMark = () => {
     }
 
     AddData = () => {
-        
+        //추가 버튼 누르면 Modal창 뜨고 이름 입력
+        //SaveData 실행
+    }
+
+    SaveData = () => {
+        //Data 저장
     }
 
     GotoURI = (uri) => {
@@ -31,7 +36,12 @@ const BookMark = () => {
 
     DeleteList = () => {
         //북마크 삭제(Alert로 Yes/No)
+        //SaveData 실행
     }
+
+
+
+    this.headerStyle();
 
     return (
         
