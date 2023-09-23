@@ -200,10 +200,8 @@ class FloatingBtn extends Component {
     menus = [
       <Pressable
         onPress={() => {
-          // DeviceEventEmitter.emit("splitView",true)
-          let nextIsSplitValue = !this.state.isSplit;
-          DeviceEventEmitter.emit("splitView", nextIsSplitValue);
-          this.setState({ isSplit: nextIsSplitValue });
+          getRootNavigation().reset({routes: [{name: 'CustomPage'}]})
+          // getRootNavigation().navigate('CustomPage',{});
         }}
         style={[
           styles.menuContainer,
@@ -212,7 +210,7 @@ class FloatingBtn extends Component {
           },
         ]}
       >
-        <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
+        <Text>커스텀 페이지</Text>
       </Pressable>,
       <Pressable
         onPress={() => {
@@ -230,11 +228,9 @@ class FloatingBtn extends Component {
       </Pressable>,
       <Pressable
         onPress={() => {
-          // DeviceEventEmitter.emit("splitView",true)
           let nextIsSplitValue = !this.state.isSplit;
           DeviceEventEmitter.emit("splitView", nextIsSplitValue);
           this.setState({ isSplit: nextIsSplitValue });
-          console.log(this.state.isSplit);
         }}
         style={[
           styles.menuContainer,
@@ -247,11 +243,8 @@ class FloatingBtn extends Component {
       </Pressable>,
       <Pressable
         onPress={() => {
-          // DeviceEventEmitter.emit("splitView",true)
-          let nextIsSplitValue = !this.state.isSplit;
-          DeviceEventEmitter.emit("splitView", nextIsSplitValue);
-          this.setState({ isSplit: nextIsSplitValue });
-          console.log(this.state.isSplit);
+          getRootNavigation().reset({routes: [{name: 'MainHome'}]})
+          // getRootNavigation().navigate('MainHome',{});
         }}
         style={[
           styles.menuContainer,
@@ -260,7 +253,7 @@ class FloatingBtn extends Component {
           },
         ]}
       >
-        <Text>{this.state.isSplit === true ? "분할끄기" : "분할켜기"}</Text>
+        <Text>메인 페이지</Text>
       </Pressable>,
       <Pressable
         onPress={() => {

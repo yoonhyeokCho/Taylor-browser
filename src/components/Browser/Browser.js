@@ -4,12 +4,15 @@ import { createRef, useEffect, useRef, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { systemAtom } from "../../recoil/recoil";
 import scripts from "../../modules/extension/scripts";
-const Browser = ({ width = "100%", height = "100%" }) => {
+
+                    
+
+const Browser = ({ width = "100%", height = "100%", webViewRef, uri }) => {
   const system = useRecoilValue(systemAtom);
-  const webViewRef = useRef(null);
+  // const webViewRef = useRef(null);
   const [inputUri, setInputUri] = useState("");
   const [stateUrl,setStateUrl] = useState("");
-  const [currentUri, setCurrentUri] = useState("https://google.com");
+  const [currentUri, setCurrentUri] = useState( uri ?? "https://google.com");
   const [extensionString, setExtensionString] = useState("");
   const handleChangeUri = (text) => {
     setInputUri(text);
@@ -40,13 +43,12 @@ const Browser = ({ width = "100%", height = "100%" }) => {
 
   useEffect(() => {
     reloadWebView();
-    console.log(extensionString);
   }, [extensionString]);
 
   const reloadWebView = () => {
     // WebView 리로드
-    if (webViewRef.current) {
-      webViewRef.current.reload();
+    if (webViewRef?.current) {
+      webViewRef?.current?.reload();
     }
   };
 
@@ -55,7 +57,7 @@ const Browser = ({ width = "100%", height = "100%" }) => {
 
   useEffect(()=>{
     setTimeout(()=>{
-      webViewRef.current.injectJavaScript(`
+      webViewRef?.current?.injectJavaScript(`
     function removeElementsExcept(target,type) {
       let excludedElements = document.querySelectorAll((type === "id" ? "#" : ".") + target);
       let parentComponent = excludedElements[0].parentElement;
@@ -107,10 +109,14 @@ const Browser = ({ width = "100%", height = "100%" }) => {
       <WebView
         onNavigationStateChange={(e)=>{
           setStateUrl(e.url);
+          setInputUri(e.url)
         }}
         ref={webViewRef}
         injectedJavaScript={extensionString}
         allowsBackForwardNavigationGestures
+        allowsFullscreenVideo={false}
+        javaScriptEnabled ={true}
+        domStorageEnabled = {true}
         source={{
           uri: currentUri,
         }}

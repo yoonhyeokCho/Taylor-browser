@@ -3,13 +3,16 @@ import { View, StyleSheet, DeviceEventEmitter, Animated, PanResponder } from "re
 import WebView from 'react-native-webview';
 import Browser from "../components/Browser/Browser";
 import { useRemoveExcept } from "../hooks/useRemoveExcept";
+import { useRoute } from "@react-navigation/native";
 
 const MainHome = () => {
     const pan = useRef(new Animated.ValueXY()).current;
-    const WebViewRef = useRef();
+    const WebViewRef1 = useRef(null);
+    const WebViewRef2 = useRef(null);
     const [isSplit, setIsSplit] = useState(true);
     const [splitContainer1Height, setSplitContainer1Height] = useState(300);
     const [splitContainer2Height, setSplitContainer2Height] = useState(500);
+    const params = useRoute().params;
 
     const panResponder = PanResponder.create({
         onStartShouldSetPanResponder: () => true,
@@ -42,24 +45,35 @@ const MainHome = () => {
         }
     }, [isSplit]);
 
-    useRemoveExcept(WebViewRef, "MM_HOME_SEARCH_WEATHER", "id");
+    useRemoveExcept(WebViewRef1, "MM_HOME_SEARCH_WEATHER", "id");
 
     return (
         <View style={styles.entire}>
-            <WebView
+    
+            {/* <WebView
                 ref={WebViewRef}
-                source={{ uri: 'https://naver.com' }}
+                source={{ uri: params?.url ?? 'https://naver.com' }}
                 javaScriptEnabled ={true}
                 domStorageEnabled = {true}
-            />
+            /> */}
+            <View style={{width: "100%", height: splitContainer1Height}} >
+                <Browser 
+                    ref={WebViewRef1}
+                    uri={ params?.url ?? 'https://naver.com'}
+                />
+            </View>
             {isSplit && (
                 <View>
                     <View style={styles.grayBar} {...panResponder.panHandlers} />
                     <View style={{ height: splitContainer2Height }}>
-                        <Browser />
+                        <Browser 
+                            webViewRef={WebViewRef2}
+                        />
                     </View>
                 </View>
             )}
+            
+            
         </View>
     );
 };

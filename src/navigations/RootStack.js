@@ -14,6 +14,7 @@ import MainHome from '../screen/MainHome';
 import JIHO from '../screen/JH';
 import Extension from '../screen/Extension';
 import GPT from '../screen/GPT';
+import CustomPage from '../screen/CustomPage';
 
 
 const RootStack = () => {
@@ -79,6 +80,11 @@ const RootStack = () => {
                 <Stack.Screen 
                     name={"RacgooTest"}
                     component={RacgooTest}
+                    options={{ headerShown: true }} 
+                />
+                <Stack.Screen 
+                    name={"CustomPage"}
+                    component={CustomPage}
                     options={{ headerShown: true }} 
                 />
             </Stack.Navigator>

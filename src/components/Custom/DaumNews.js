@@ -1,22 +1,28 @@
-
-//box_g box_rtnews _tesla_news_news  -> class
-
 import React, { useState, useEffect, useRef } from "react";
 import { View} from "react-native";
 import WebView from 'react-native-webview';
-import { useRemoveExcept } from "../hooks/useRemoveExcept";
-
-
+import { useRemoveExcept } from "../../hooks/useRemoveExcept";
 const DaumNews = () => {
     const WebViewRef = useRef();
-
-    useRemoveExcept(WebViewRef, "box_g.box_rtnews._tesla_news_news", "class");
+    const [isDisplay,setIsDisplay] = useState(false);
+    const [loadFinish,setLoadFinish] = useState(false);
+    useEffect(()=>{
+        if(loadFinish){
+            useRemoveExcept(WebViewRef, 'box_g.box_rtnews._tesla_news_news', "class");
+            setTimeout(()=>{
+                setIsDisplay(true);
+            },200);
+        }
+    },[loadFinish])
+    
 
     return (
-        <View>
+        <View style={{height: 600, width: "100%", position: "relative", opacity: isDisplay ? 1 : 0}} >
             <WebView
+                onLoadEnd={()=>{setLoadFinish(true)}}    
+                style={{width: "100%"}}
                 ref={WebViewRef}
-                source={{ uri: 'https://daum.net' }}
+                source={{ uri: 'https://m.daum.net/' }}
                 javaScriptEnabled={true}
                 domStorageEnabled={true}>
 
@@ -26,4 +32,6 @@ const DaumNews = () => {
     )
 }
 
-export default DaumNews
+export default DaumNews;
+
+
