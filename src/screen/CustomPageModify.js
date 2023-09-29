@@ -1,5 +1,5 @@
 import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet, View, Text, Pressable, TouchableOpacity, Modal, ScrollView } from "react-native";
 import getCustomPageList from "../data/getCustomPageList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -48,25 +48,63 @@ const CustomPageModify = () => {
         handleClose();
     }
 
-    const renderItem = ({ item, drag, isActive }) => (
-        <ScaleDecorator   >
-            <TouchableOpacity
-                onPressIn={drag}
-                // onPress={drag}
-                // onLongPress={drag}
-                disabled={isActive} 
-                style={{borderWidth: 2}}
+    const renderItem = ({ item, drag, isActive, getIndex }) => {
+        const [isDeleteMode,setIsDeleteMode] = useState(false);
+        const handleDelete = async () => {
+            let tmp = currentCustomPageNameList.slice();
+            await AsyncStorage.setItem("currentCustomPageNameList",JSON.stringify(tmp.filter((d,di)=>di!==getIndex())));
+            setIsDeleteMode(false);
+            updateCurrentCustomPageNameList();
+        }
+        return (
+            <ScaleDecorator   >
+                <TouchableOpacity
+                    onPressIn={drag}
+                    onLongPress={()=>{
+                        console.log("long press")
+                        setIsDeleteMode(true);
+                    }}
+                    disabled={isDeleteMode} 
+                    style={{borderWidth: 2}}
+                    >
+                <View style={{width: "100%", height: '100%',position: "absolute", backgroundColor: "red", zIndex: 1, opacity: 0.1, alignItems: "flex-end"}} >
+                    
+                </View  >
+                {
+                        isDeleteMode && <View style={{flexDirection: "row", height: 40, backgroundColor: "red", position: "absolute", right: 0, alignItems: "center", gap: 10, zIndex: 2}} >
+                            <Pressable 
+                                style={{justifyContent: "center", alignItems: "center", width: 60}} 
+                                onPress={handleDelete}
+                            >
+                                <Text style={{fontSize: 20}} >
+                                    삭제
+                                </Text>
+                            </Pressable>
+                            <Pressable 
+                                style={{justifyContent: "center", alignItems: "center", width: 60}}
+                                onPress={()=>{
+                                    setIsDeleteMode(false);
+                                }}
+                            >
+                                <Text style={{fontSize: 20}} >
+                                    취소
+                                </Text>
+                            </Pressable>
+                        </View>
+                    }
+                <Text style={{
+                    fontSize: 30, 
+                    fontWeight: 700,
+                    height: 40
+                }} 
                 >
-            <View style={{width: "100%", height: '100%',position: "absolute", backgroundColor: "red", zIndex: 1, opacity: 0.1}} >
-
-            </View>
-            <Text style={{fontSize: 30, 
-                            fontWeight: 700}} >
-                {item}
-            </Text>
-            </TouchableOpacity>
-        </ScaleDecorator>
-    );
+                    {item}
+                </Text>
+                </TouchableOpacity>
+            </ScaleDecorator>
+        );
+    }
+    
 
     return <BottomSheetModalProvider>
         <View style={styles.container} >
