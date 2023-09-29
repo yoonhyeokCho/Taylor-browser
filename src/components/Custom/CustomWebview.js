@@ -4,6 +4,7 @@ import { View} from "react-native";
 import { useRemoveExcept } from "../../hooks/useRemoveExcept";
 import { getRootNavigation } from "../../navigations/navigations";
 import WebView from "react-native-webview";
+import { useFocusEffect } from "@react-navigation/native";
 
 const CustomWebview = ({
     uri,
@@ -19,6 +20,7 @@ const CustomWebview = ({
     const [isDisplay,setIsDisplay] = useState(false);
     const [loadFinish,setLoadFinish] = useState(false);
     const [loadOffset,setLoadOffset] = useState((new Date().getTime())+5000);
+    const [reloadCount,setReloadCount] = useState(0);
     useEffect(()=>{
         if(loadFinish){
             setTimeout(()=>{
@@ -28,11 +30,9 @@ const CustomWebview = ({
                     setLoadOffset(new Date().getTime()+2000);
                 },100)
             },1000);
-            // setTimeout(()=>{
-            //     useRemoveExcept(WebViewRef, targetCss, cssType);
-            // },1000)
         }
-    },[loadFinish])
+    },[loadFinish]);
+
     
     // console.log(uri)
     // console.log(path)

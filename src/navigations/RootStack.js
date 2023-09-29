@@ -8,13 +8,15 @@ import GNB from './GNB';
 import RacgooTest from "../screen/RacgooTest";
 import Splash from '../screen/Splash';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { RootNavigationRef } from './navigations';
+import { getRootNavigation, RootNavigationRef } from './navigations';
 import requestLoadingClose from '../actions/loading/requestLoadingClose';
 import MainHome from '../screen/MainHome';
 import JIHO from '../screen/JH';
 import Extension from '../screen/Extension';
 import GPT from '../screen/GPT';
 import CustomPage from '../screen/CustomPage';
+import CustomPageModify from '../screen/CustomPageModify';
+import { Pressable, Text } from 'react-native';
 
 
 const RootStack = () => {
@@ -85,6 +87,25 @@ const RootStack = () => {
                 <Stack.Screen 
                     name={"CustomPage"}
                     component={CustomPage}
+                    options={{ 
+                        headerShown: true,
+                        headerTitle: <Text>CustomPage</Text>,
+                        headerRight: () => (
+                          <Pressable
+                            onPress={() => {
+                                getRootNavigation().navigate('CustomPageModify',{});
+                            }}
+                          >
+                            <Text style={{marginRight: 10}} >
+                                편집
+                            </Text>
+                          </Pressable>
+                        ),
+                    }} 
+                />
+                <Stack.Screen 
+                    name={"CustomPageModify"}
+                    component={CustomPageModify}
                     options={{ headerShown: true }} 
                 />
             </Stack.Navigator>
