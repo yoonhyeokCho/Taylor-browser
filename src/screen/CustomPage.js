@@ -4,16 +4,18 @@ import GoogleSearch from "../components/Custom/GoogleSearch";
 import DaumSearch from "../components/Custom/DaumSearch";
 import NaverSearch from "../components/Custom/NaverSearch";
 import CustomWebview from "../components/Custom/CustomWebview";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import getCustomPageList from "../data/getCustomPageList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useIsFocused, useRoute } from "@react-navigation/native";
 
 
 
 const CustomPage = () => {
+    const isFocused = useIsFocused();
     let [currentCustomPageNameList,setCurrentCustomPageNameList] = useState([]);
     const customPageList = getCustomPageList();
+    const route = useRoute();
     const [reloadFlag,setReloadFlag] = useState(false);
 
     const getCurrentCustomPageNameList = async () => {
@@ -33,7 +35,7 @@ const CustomPage = () => {
         if(!reloadFlag){
             setTimeout(()=>{
                 setReloadFlag(true);
-            },1000);
+            },10);
         }
     },[reloadFlag]);
 
@@ -42,15 +44,17 @@ const CustomPage = () => {
         setCurrentCustomPageNameList(await getCurrentCustomPageNameList());
     }
 
-    useFocusEffect(()=>{
-        console.log("focus")
-        setReloadFlag(false);
-        updateCurrentCustomPageNameList();
-    })
+    // useFocusEffect(()=>{
+    //     console.log("focus")
+    //     updateCurrentCustomPageNameList();
+    // })
 
     useEffect(()=>{
-        
-    },[]);
+        if(isFocused){
+            updateCurrentCustomPageNameList();
+            setReloadFlag(false);
+        }
+    },[isFocused]);
 
     return <View style={{flex: 1, backgroundColor: "gray"}} >
         {
