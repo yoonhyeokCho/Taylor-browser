@@ -295,6 +295,36 @@ class FloatingBtn extends Component {
         {isVisible && (
           <Pressable style={styles.activeDim} onPress={this.handleClose} />
         )}
+        <View
+          style={{
+            position: "absolute",
+            left: dimensions.width / 2,
+            bottom: 0,
+            backgroundColor: "red",
+            zIndex: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Animated.View
+            style={[
+              styles.FloatBtn,
+              {
+                bottom: floatingBtnBottomOffset,
+                width: this.state.sizeAnim,
+                height: this.state.sizeAnim,
+              },
+            ]}
+            // {...this.panResponder.panHandlers}
+          >
+            <Pressable
+              onPress={this.handleOpen}
+              style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}
+            >
+              <AntDesign name="star" size={24} color="black" />
+            </Pressable>
+          </Animated.View>
+        </View>
         {isVisible && (
           <Animated.View
             style={[
@@ -355,36 +385,7 @@ class FloatingBtn extends Component {
             ))}
           </Animated.View>
         )}
-        <View
-          style={{
-            position: "absolute",
-            left: dimensions.width / 2,
-            bottom: 0,
-            backgroundColor: "red",
-            zIndex: 10,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Animated.View
-            style={[
-              styles.FloatBtn,
-              {
-                bottom: floatingBtnBottomOffset,
-                width: this.state.sizeAnim,
-                height: this.state.sizeAnim,
-              },
-            ]}
-            // {...this.panResponder.panHandlers}
-          >
-            <Pressable
-              onPress={this.handleOpen}
-              style={{ width: "100%", height: "100%", justifyContent: "center", alignItems: "center" }}
-            >
-              <AntDesign name="star" size={24} color="black" />
-            </Pressable>
-          </Animated.View>
-        </View>
+        
       </Fragment>
     );
   }

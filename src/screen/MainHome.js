@@ -42,6 +42,8 @@ const MainHome = () => {
         if (isSplit) {
             setSplitContainer1Height(300);
             setSplitContainer2Height(500);
+        }else{
+            setSplitContainer1Height("100%");
         }
     }, [isSplit]);
 

@@ -39,8 +39,8 @@ const AppWithModules = () => {
       {
         isAppReady &&
         <Fragment>
-          <ModuleProvider />
           <RootStack />
+          <ModuleProvider />
         </Fragment>
       }
       </Fragment>
